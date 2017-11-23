@@ -59,7 +59,7 @@ djangorestframework-jsonp==1.0.2
 
 # Docs
 sphinxcontrib-httpdomain==1.4.0
-commonmark==0.5.5
+commonmark
 recommonmark==0.4.0
 
 # Version comparison stuff
@@ -71,4 +71,4 @@ nilsimsa==0.3.7
 
 # Pegged git requirements
 git+https://github.com/zyga/django-pagination.git@86caf15#egg=django_pagination-dev
-git+https://github.com/alex/django-taggit.git#egg=django_taggit-dev
+django-taggit
