@@ -376,6 +376,3 @@ class CommunityBaseSettings(Settings):
             },
         },
     }
-
-    SLUMBER_USERNAME = 'andy'
-    SLUMBER_PASSWORD = 'mni2639!'
