@@ -1,32 +1,35 @@
 """Project views for authenticated users"""
 
 from __future__ import absolute_import
+
 import logging
 
+from allauth.socialaccount.models import SocialAccount
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import (HttpResponseRedirect, HttpResponseNotAllowed,
                          Http404, HttpResponseBadRequest)
-from django.shortcuts import get_object_or_404, render_to_response, render
-from django.template import RequestContext
-from django.views.generic import View, TemplateView, ListView
-from django.utils.translation import ugettext_lazy as _
-from django.utils.safestring import mark_safe
 from django.middleware.csrf import get_token
+from django.shortcuts import get_object_or_404, render
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import View, TemplateView, ListView
 from formtools.wizard.views import SessionWizardView
-from allauth.socialaccount.models import SocialAccount
-
 from vanilla import CreateView, DeleteView, UpdateView, DetailView, GenericView
 
 from readthedocs.bookmarks.models import Bookmark
-from readthedocs.builds.models import Version
 from readthedocs.builds.forms import AliasForm, VersionForm
+from readthedocs.builds.models import Version
 from readthedocs.builds.models import VersionAlias
-from readthedocs.core.utils import trigger_build, broadcast
 from readthedocs.core.mixins import ListViewWithForm
+from readthedocs.core.mixins import LoginRequiredMixin
+from readthedocs.core.utils import trigger_build, broadcast
 from readthedocs.integrations.models import HttpExchange, Integration
+from readthedocs.oauth.services import registry
+from readthedocs.oauth.utils import attach_webhook, update_webhook
+from readthedocs.projects import tasks
 from readthedocs.projects.forms import (
     ProjectBasicsForm, ProjectExtraForm, ProjectAdvancedForm,
     UpdateProjectForm, ProjectRelationshipForm,
@@ -35,13 +38,8 @@ from readthedocs.projects.forms import (
     ProjectAdvertisingForm)
 from readthedocs.projects.models import (
     Project, ProjectRelationship, EmailHook, WebHook, Domain)
-from readthedocs.projects.views.base import ProjectAdminMixin, ProjectSpamMixin
-from readthedocs.projects import tasks
-from readthedocs.oauth.services import registry
-from readthedocs.oauth.utils import attach_webhook, update_webhook
-
-from readthedocs.core.mixins import LoginRequiredMixin
 from readthedocs.projects.signals import project_import
+from readthedocs.projects.views.base import ProjectAdminMixin, ProjectSpamMixin
 
 log = logging.getLogger(__name__)
 
@@ -180,11 +178,11 @@ def project_version_detail(request, project_slug, version_slug):
         url = reverse('project_version_list', args=[project.slug])
         return HttpResponseRedirect(url)
 
-    return render_to_response(
-        'projects/project_version_detail.html',
-        {'form': form, 'project': project, 'version': version},
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/project_version_detail.html', {
+        'form': form,
+        'project': project,
+        'version': version
+    })
 
 
 @login_required
@@ -204,11 +202,7 @@ def project_delete(request, project_slug):
         project_dashboard = reverse('projects_dashboard')
         return HttpResponseRedirect(project_dashboard)
 
-    return render_to_response(
-        'projects/project_delete.html',
-        {'project': project},
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/project_delete.html', {'project': project})
 
 
 class ImportWizardView(ProjectSpamMixin, PrivateViewMixin, SessionWizardView):
@@ -388,11 +382,7 @@ def edit_alias(request, project_slug, alias_id=None):
     if request.method == 'POST' and form.is_valid():
         alias = form.save()
         return HttpResponseRedirect(alias.project.get_absolute_url())
-    return render_to_response(
-        'projects/alias_edit.html',
-        {'form': form},
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/alias_edit.html', {'form': form})
 
 
 class AliasList(PrivateViewMixin, ListView):
@@ -523,13 +513,7 @@ def project_comments_settings(request, project_slug):
     project = get_object_or_404(Project.objects.for_admin_user(request.user),
                                 slug=project_slug)
 
-    return render_to_response(
-        'projects/project_comments_settings.html',
-        {
-            'project': project,
-        },
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/project_comments_settings.html', {'project': project})
 
 
 @login_required
