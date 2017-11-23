@@ -152,11 +152,10 @@ def project_versions(request, project_slug):
         project_dashboard = reverse('projects_detail', args=[project.slug])
         return HttpResponseRedirect(project_dashboard)
 
-    return render_to_response(
-        'projects/project_versions.html',
-        {'form': form, 'project': project},
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/project_versions.html', {
+        'form': form,
+        'project': project,
+    })
 
 
 @login_required
@@ -469,11 +468,11 @@ def project_users(request, project_slug):
 
     users = project.users.all()
 
-    return render_to_response(
-        'projects/project_users.html',
-        {'form': form, 'project': project, 'users': users},
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/project_users.html', {
+        'form': form,
+        'project': project,
+        'users': users
+    })
 
 
 @login_required
@@ -510,17 +509,13 @@ def project_notifications(request, project_slug):
     emails = project.emailhook_notifications.all()
     urls = project.webhook_notifications.all()
 
-    return render_to_response(
-        'projects/project_notifications.html',
-        {
-            'email_form': email_form,
-            'webhook_form': webhook_form,
-            'project': project,
-            'emails': emails,
-            'urls': urls,
-        },
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/project_notifications.html', {
+        'email_form': email_form,
+        'webhook_form': webhook_form,
+        'project': project,
+        'emails': emails,
+        'urls': urls,
+    })
 
 
 @login_required
@@ -570,11 +565,11 @@ def project_translations(request, project_slug):
 
     lang_projects = project.translations.all()
 
-    return render_to_response(
-        'projects/project_translations.html',
-        {'form': form, 'project': project, 'lang_projects': lang_projects},
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/project_translations.html', {
+        'form': form,
+        'project': project,
+        'lang_projects': lang_projects
+    })
 
 
 @login_required
@@ -601,11 +596,11 @@ def project_redirects(request, project_slug):
 
     redirects = project.redirects.all()
 
-    return render_to_response(
-        'projects/project_redirects.html',
-        {'form': form, 'project': project, 'redirects': redirects},
-        context_instance=RequestContext(request)
-    )
+    return render(request, 'projects/project_redirects.html', {
+        'form': form,
+        'project': project,
+        'redirects': redirects
+    })
 
 
 @login_required
