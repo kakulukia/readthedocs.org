@@ -160,7 +160,7 @@ class CommunityBaseSettings(Settings):
     TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [os.path.join(SITE_ROOT, 'readthedocs', 'templates')],
+            'DIRS': [TEMPLATE_ROOT],
             'OPTIONS': {
                 'debug': True,
                 'context_processors': [
