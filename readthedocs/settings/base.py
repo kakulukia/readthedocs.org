@@ -36,7 +36,7 @@ class CommunityBaseSettings(Settings):
     # Domains and URLs
     PRODUCTION_DOMAIN = 'readthedocs.org'
     PUBLIC_DOMAIN = None
-    USE_SUBDOMAIN = True
+    USE_SUBDOMAIN = False
     PUBLIC_API_URL = 'https://{0}'.format(PRODUCTION_DOMAIN)
 
     ADMINS = (
@@ -278,7 +278,7 @@ class CommunityBaseSettings(Settings):
 
     # RTD Settings
     REPO_LOCK_SECONDS = 30
-    ALLOW_PRIVATE_REPOS = True
+    ALLOW_PRIVATE_REPOS = False
     GROK_API_HOST = 'https://api.grokthedocs.com'
     SERVE_DOCS = ['public']
 
