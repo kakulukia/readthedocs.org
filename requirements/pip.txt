@@ -72,4 +72,3 @@ nilsimsa==0.3.7
 # Pegged git requirements
 git+https://github.com/zyga/django-pagination.git@86caf15#egg=django_pagination-dev
 django-taggit
-gdal
