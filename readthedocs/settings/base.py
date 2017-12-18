@@ -162,7 +162,7 @@ class CommunityBaseSettings(Settings):
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
             'DIRS': [TEMPLATE_ROOT],
             'OPTIONS': {
-                'debug': True,
+                'debug': DEBUG,
                 'context_processors': [
                     "django.contrib.auth.context_processors.auth",
                     "django.contrib.messages.context_processors.messages",
